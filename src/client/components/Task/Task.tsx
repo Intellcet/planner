@@ -13,8 +13,8 @@ const Task = (props: TaskProps): React.ReactElement => {
   return (
     <div className={styles.container}>
       <div className={styles.heading}>
-        <span>Задача: №{id}</span>
-        <span>Дата: {date}</span>
+        <span className={styles.taskNumber}>Задача: №{id}</span>
+        <span className={styles.date}>Дата: {date}</span>
       </div>
       <p className={styles.title}>{title}</p>
       <p className={styles.description}>{description}</p>

@@ -1,10 +1,11 @@
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
-import Task from '../Task';
 
 import '../../styles/common.pcss';
 import '../../styles/fonts.pcss';
 import '../../styles/variables.pcss';
+
+import Task from '../Task';
 
 const App = (): React.ReactElement => {
   return (
