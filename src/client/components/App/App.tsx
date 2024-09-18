@@ -7,8 +7,16 @@ import '../../styles/fonts.pcss';
 import '../../styles/variables.pcss';
 
 const App = (): React.ReactElement => {
-  return <div>
-    <Task id={1} date="20.12.2007" title="Обосрать Даню" description="Значится приходит и срем какулями на Даню с неебейшим кайфом"/></div>;
+  return (
+    <div>
+      <Task
+        id={1}
+        date="20.12.2007"
+        title="Обосрать Даню"
+        description="Значится приходит и срем какулями на Даню с неебейшим кайфом"
+      />
+    </div>
+  );
 };
 
 export default hot(App);
