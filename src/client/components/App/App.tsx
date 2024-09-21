@@ -6,10 +6,12 @@ import '../../styles/fonts.pcss';
 import '../../styles/variables.pcss';
 
 import Task from '../Task';
+import Button from '../Button';
 
 const App = (): React.ReactElement => {
   return (
     <div>
+      <Button title="Задачи" />
       <Task
         id={1}
         date="20.12.2007"
