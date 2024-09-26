@@ -50,14 +50,25 @@ class Router {
       res.send(apiAnswer.answer(result));
     });
 
-    router.get('/task', async (req: any, res: any) => {});
+    router.get('/task', async (req: any, res: any) => {
+      const { taskId } = req.query;
+
+      const task = await taskManager.getTask(taskId);
+
+      if (!task) {
+        res.send(apiAnswer.error(3020));
+        return;
+      }
+
+      res.send(apiAnswer.answer(task));
+    });
 
     router.post('/task', async (req: any, res: any) => {
       const {
         creatorId,
         statusId,
         title,
-        descriptions,
+        description,
         labels,
         finishTime = null,
         participants = [],
@@ -67,7 +78,7 @@ class Router {
         creatorId,
         statusId,
         title,
-        descriptions,
+        description,
         labels,
         participants,
         finishTime

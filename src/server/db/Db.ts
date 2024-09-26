@@ -1,6 +1,6 @@
 import sqlite3, { RunResult } from 'sqlite3';
 
-import { UserRow } from '../types';
+import { StatusRow, TaskRow, TaskSimpleRow, UserRow } from '../types';
 
 type DBOptions = {
   [dbName: string]: string;
@@ -13,6 +13,18 @@ class Db {
     this.db = new sqlite3.Database(`${__dirname}/${options.dbName}`);
   }
 
+  async getStatus(id: string | number): Promise<StatusRow | null> {
+    return new Promise(resolve => {
+      const query = `SELECT * FROM status WHERE id=?`;
+
+      this.db.get(query, [id], (err, row) => {
+        if (err) resolve(null);
+
+        resolve(row);
+      });
+    });
+  }
+
   async getUserByLogin(login: string): Promise<UserRow | null> {
     return new Promise(resolve => {
       const query = `SELECT * FROM user WHERE login=?`;
@@ -22,6 +34,18 @@ class Db {
           resolve(row);
         }
         resolve(null);
+      });
+    });
+  }
+
+  async getUserById(id: string | number): Promise<UserRow | null> {
+    return new Promise(resolve => {
+      const query = `SELECT * FROM user WHERE id=?`;
+
+      this.db.get(query, [id], (err, row) => {
+        if (err) resolve(null);
+
+        resolve(row);
       });
     });
   }
@@ -42,7 +66,7 @@ class Db {
     statusId: number,
     title: string,
     description: string,
-    labels: number[],
+    labels: string[],
     participants: number[],
     finishTime: string | null
   ) {
@@ -57,8 +81,8 @@ class Db {
           statusId,
           title,
           description,
-          JSON.stringify(labels),
-          JSON.stringify(participants),
+          labels.length !== 0 ? JSON.stringify(labels) : '',
+          participants.length !== 0 ? JSON.stringify(participants) : '',
           finishTime,
         ],
         function(err) {
@@ -67,6 +91,18 @@ class Db {
           resolve(this.lastID);
         }
       );
+    });
+  }
+
+  async getTask(taskId: number): Promise<TaskSimpleRow | null> {
+    return new Promise(resolve => {
+      const query = `SELECT * FROM task WHERE id=?`;
+
+      this.db.get(query, [taskId], (err, row) => {
+        if (err) resolve(null);
+
+        resolve(row);
+      });
     });
   }
 }

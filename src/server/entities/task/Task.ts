@@ -20,17 +20,21 @@ class Task {
 
   constructor(
     id: number,
+    creator: User,
     title: string,
     description: string,
     labels: string[],
     participants: User[],
+    status: Status,
     finishTime: Date | string
   ) {
     this._id = id;
+    this._creator = creator;
     this._title = title;
     this._description = description;
     this._labels = labels;
     this._participants = participants;
+    this._status = status;
     this._finishTime = finishTime;
   }
 
