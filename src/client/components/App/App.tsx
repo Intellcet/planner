@@ -8,10 +8,13 @@ import '../../styles/variables.pcss';
 import Task from '../Task';
 import Button from '../Button';
 
+import ClockSVG from '../../assets/clock.svg';
+
 const App = (): React.ReactElement => {
   return (
     <div>
-      <Button title="Задачи" />
+      <Button type="buttonCircle" content={ClockSVG} />
+      <Button type="buttonText" content="ClockSVG" />
       <Task
         id={1}
         date="20.12.2007"

@@ -1,18 +1,28 @@
 .container {
   display: flex;
   justify-content: center;
-  margin-right: 7px;
-  border-radius: 10px;
-  padding: 19px 5px;
-  width: 155px;
-  background: #d9d9d9;
   transition: 0.2s linear;
   cursor: pointer;
+  &Text {
+    margin-right: 7px;
+    padding: 19px 5px;
+    width: 155px;
+    border-radius: 10px;
+    background: #d9d9d9;
+  }
+  &Circle {
+    padding: 5px 0;
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background-color: #ffffff;
+  }
   &:hover {
     background-color: #d9d9d97c;
   }
 }
-.title {
+
+.content {
   font-family: 'Inter-Regular', sans-serif;
   font-size: 16px;
   line-height: 19px;
