@@ -5,22 +5,39 @@ import Icon from '../Icon';
 import Text from '../Text';
 
 type ButtonProps = {
-  type: string;
-  content: React.ReactElement | string;
+  type?: 'submit' | 'button' | 'reset';
+  category: string;
+  content: React.ReactNode;
+  onClick?: (event: React.SyntheticEvent) => void;
 };
 
 const Button = (props: ButtonProps): React.ReactElement => {
-  const { type, content } = props;
+  const {
+    category,
+    type,
+    content,
+    onClick
+  } = props;
+
+  const handleClick = (event: React.SyntheticEvent): void => {
+    if (onClick) {
+      onClick(event);
+    }
+  };
+
   return (
     <button
-      className={clsx(styles.container, {
-        [styles.containerText]: type === 'buttonText',
-        [styles.containerCircle]: type === 'buttonCircle',
-      })}
+      className={clsx(
+        styles.container,
+        category === 'buttonText' && styles.containerText,
+        category === 'buttonCircle' && styles.containerCircle
+      )}
+      type={type}
+      onClick={handleClick}
     >
       <div>
-        {type === 'buttonCircle' ? (
-          <Icon id={content.id} viewBox="0 0 41 40" width={41} height={40} />
+        {category === 'buttonCircle' ? (
+          <Icon id={content.id} viewBox="0 0 40 40" width={40} height={40} />
         ) : (
           <Text content={content} />
         )}

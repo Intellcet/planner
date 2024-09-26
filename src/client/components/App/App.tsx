@@ -10,11 +10,15 @@ import Button from '../Button';
 
 import ClockSVG from '../../assets/clock.svg';
 
+const Action = () => {
+  console.log('click');
+}
+
 const App = (): React.ReactElement => {
   return (
     <div>
-      <Button type="buttonCircle" content={ClockSVG} />
-      <Button type="buttonText" content="ClockSVG" />
+      <Button category="buttonCircle" type='button' onClick={Action} content={ClockSVG} />
+      <Button category="buttonText" type='button' content="ClockSVG" />
       <Task
         id={1}
         date="20.12.2007"
