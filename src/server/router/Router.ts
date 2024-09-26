@@ -1,19 +1,19 @@
 import express from 'express';
 
-import Db from '../db/Db';
 import UserManager from '../managers/UserManager';
+import TaskManager from '../managers/TaskManager';
 import apiAnswer from './ApiAnswer';
 
 const router = express.Router();
 
 type RouterOptions = {
-  db: Db;
   userManager: UserManager;
+  taskManager: TaskManager;
 };
 
 class Router {
   constructor(options: RouterOptions) {
-    const { db, userManager } = options;
+    const { userManager, taskManager } = options;
 
     router.get('/', async (req: any, res: any) => {
       res.send('server is working!');
@@ -48,6 +48,37 @@ class Router {
       }
 
       res.send(apiAnswer.answer(result));
+    });
+
+    router.get('/task', async (req: any, res: any) => {});
+
+    router.post('/task', async (req: any, res: any) => {
+      const {
+        creatorId,
+        statusId,
+        title,
+        descriptions,
+        labels,
+        finishTime = null,
+        participants = [],
+      } = req.body;
+
+      const result = await taskManager.createTask(
+        creatorId,
+        statusId,
+        title,
+        descriptions,
+        labels,
+        participants,
+        finishTime
+      );
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(3010));
     });
   }
 

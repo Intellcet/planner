@@ -23,12 +23,14 @@ class Task {
     title: string,
     description: string,
     labels: string[],
+    participants: User[],
     finishTime: Date | string
   ) {
     this._id = id;
     this._title = title;
     this._description = description;
     this._labels = labels;
+    this._participants = participants;
     this._finishTime = finishTime;
   }
 

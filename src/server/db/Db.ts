@@ -1,4 +1,4 @@
-import sqlite3 from 'sqlite3';
+import sqlite3, { RunResult } from 'sqlite3';
 
 import { UserRow } from '../types';
 
@@ -34,6 +34,39 @@ class Db {
         if (!err) resolve(true);
         resolve(false);
       });
+    });
+  }
+
+  async addTask(
+    creatorId: number,
+    statusId: number,
+    title: string,
+    description: string,
+    labels: number[],
+    participants: number[],
+    finishTime: string | null
+  ) {
+    return new Promise(resolve => {
+      // eslint-disable-next-line max-len
+      const query = `INSERT INTO task (creator_id, status_id, title, description, labels, participants, finish_time) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+      this.db.run(
+        query,
+        [
+          creatorId,
+          statusId,
+          title,
+          description,
+          JSON.stringify(labels),
+          JSON.stringify(participants),
+          finishTime,
+        ],
+        function(err) {
+          if (err) resolve(false);
+
+          resolve(this.lastID);
+        }
+      );
     });
   }
 }

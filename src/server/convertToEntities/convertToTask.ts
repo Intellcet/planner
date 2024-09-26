@@ -8,6 +8,7 @@ export const convertToTask = (row: TaskRow): Task => {
     row.title,
     row.description,
     row.labels,
+    row.participants,
     row.finishTime
   );
 };

@@ -13,6 +13,7 @@ class ApiAnswer {
     2001: 'user with this login already exists',
     2002: 'not enough parameters',
     2010: 'incorrect login data',
+    3010: 'cannot create task',
     401: 'not authorized',
     402: 'invalid authorized token',
     404: 'element not found',

@@ -6,12 +6,14 @@ import Settings from './settings';
 import Router from './router/Router';
 import Db from './db/Db';
 import UserManager from './managers/UserManager';
+import TaskManager from './managers/TaskManager';
 
 const app = express();
 const server = new http.Server(app);
 const db = new Db({ dbName: Settings.dbName });
 const userManager = new UserManager({ db });
-const router = new Router({ db, userManager });
+const taskManager = new TaskManager({ db });
+const router = new Router({ userManager, taskManager });
 
 app.use(cors());
 app.use(express.json());

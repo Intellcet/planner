@@ -1,3 +1,5 @@
+import User from '../entities/user/User';
+
 export type StatusRow = {
   id: number;
   name: string;
@@ -10,6 +12,7 @@ export type TaskRow = {
   title: string;
   description: string;
   labels: string[];
+  participants: User[];
   finishTime: string;
 };
 
