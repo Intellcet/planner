@@ -31,6 +31,24 @@ class Router {
 
       res.send(apiAnswer.answer(result));
     });
+
+    router.post('/registration', async (req: any, res: any) => {
+      const { name, login, password, email } = req.body;
+
+      const result = await userManager.registration(
+        name,
+        login,
+        password,
+        email
+      );
+
+      if (!result) {
+        res.send(apiAnswer.error(2001));
+        return;
+      }
+
+      res.send(apiAnswer.answer(result));
+    });
   }
 
   getRouter() {

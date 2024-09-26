@@ -27,6 +27,21 @@ class UserManager {
 
     return user;
   }
+
+  async registration(
+    name: string,
+    login: string,
+    password: string,
+    email: string
+  ) {
+    const isUserAlreadyExists = await this._db.getUserByLogin(login);
+
+    if (isUserAlreadyExists) return false;
+
+    const hash = md5(login + password);
+
+    return this._db.addUser(name, login, hash, email);
+  }
 }
 
 export default UserManager;
