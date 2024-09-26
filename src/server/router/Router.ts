@@ -1,8 +1,8 @@
 import express from 'express';
 
+import apiAnswer from './ApiAnswer';
 import UserManager from '../managers/UserManager';
 import TaskManager from '../managers/TaskManager';
-import apiAnswer from './ApiAnswer';
 
 const router = express.Router();
 
@@ -90,6 +90,35 @@ class Router {
       }
 
       res.send(apiAnswer.error(3010));
+    });
+
+    router.put('/task', async (req: any, res: any) => {
+      const {
+        id,
+        status = null,
+        title = null,
+        description = null,
+        labels = null,
+        finishTime = null,
+        participants = null,
+      } = req.body;
+
+      const result = await taskManager.updateTask({
+        id,
+        title,
+        status,
+        description,
+        labels,
+        finishTime,
+        participants,
+      });
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(3030));
     });
   }
 

@@ -15,6 +15,7 @@ class ApiAnswer {
     2010: 'incorrect login data',
     3010: 'cannot create task',
     3020: 'task is not exists',
+    3030: 'cannot update task',
     401: 'not authorized',
     402: 'invalid authorized token',
     404: 'element not found',

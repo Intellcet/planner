@@ -1,14 +1,28 @@
-import { cloneDeep } from 'lodash';
-import Db from '../db/Db';
-import { convertToTask } from '../convertToEntities/convertToTask';
-import User from '../entities/user/User';
-import { convertToUser } from '../convertToEntities/convertToUser';
+// TODO:: remove later
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+import { isNil, omitBy } from 'lodash';
+
 import { TaskRow, UserRow } from '../types';
-import { convertToStatus } from '../convertToEntities/convertToStatus';
+import Db from '../db/Db';
+import User from '../entities/user/User';
 import Task from '../entities/task/Task';
+import { convertToTask } from '../convertToEntities/convertToTask';
+import { convertToUser } from '../convertToEntities/convertToUser';
+import { convertToStatus } from '../convertToEntities/convertToStatus';
 
 type TaskManagerOptions = {
   db: Db;
+};
+
+type UpdateTaskOptions = {
+  id: number;
+  status: number | null;
+  title: string | null;
+  description: string | null;
+  labels: string[] | null;
+  finishTime: string | null;
+  participants: string[] | null;
 };
 
 class TaskManager {
@@ -95,6 +109,13 @@ class TaskManager {
     };
 
     return convertToTask(taskRow);
+  }
+
+  async updateTask(options: UpdateTaskOptions): Promise<boolean> {
+    const nonEmptyOptions = omitBy(options, isNil);
+    const result = await this._db.updateTask(nonEmptyOptions);
+
+    return result;
   }
 }
 

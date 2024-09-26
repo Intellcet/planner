@@ -1,10 +1,21 @@
-import sqlite3, { RunResult } from 'sqlite3';
+import sqlite3 from 'sqlite3';
 
-import { StatusRow, TaskRow, TaskSimpleRow, UserRow } from '../types';
+import { StatusRow, TaskSimpleRow, UserRow } from '../types';
 
 type DBOptions = {
   [dbName: string]: string;
 };
+
+const TASK_UPDATE_KEYS_MAPPER = {
+  status: 'status_id',
+  title: 'title',
+  description: 'description',
+  labels: 'labels',
+  participants: 'participants',
+  finishTime: 'finish_time',
+};
+
+type TaskUpdateKeys = keyof typeof TASK_UPDATE_KEYS_MAPPER;
 
 class Db {
   private db: sqlite3.Database;
@@ -102,6 +113,30 @@ class Db {
         if (err) resolve(null);
 
         resolve(row);
+      });
+    });
+  }
+
+  async updateTask(options: any): Promise<boolean> {
+    return new Promise(resolve => {
+      let subQuery = '';
+
+      Object.entries(options).forEach(value => {
+        if (value[0] === 'id') return;
+
+        const [key, val] = value as [TaskUpdateKeys, any];
+
+        subQuery +=
+          TASK_UPDATE_KEYS_MAPPER[key] + ' = ' + JSON.stringify(val) + ', ';
+      });
+
+      const query = `UPDATE task SET ${subQuery.substring(
+        0,
+        subQuery.length - 2
+      )} WHERE id=?`;
+
+      this.db.run(query, [options.id], err => {
+        resolve(!err);
       });
     });
   }
