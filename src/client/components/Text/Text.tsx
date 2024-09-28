@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Text.module.pcss';
 
 type TextProps = {
-  content: React.ReactElement | string;
+  content: React.ReactNode;
 };
 
 const Text = (props: TextProps): React.ReactElement => {
