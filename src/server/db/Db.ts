@@ -140,6 +140,16 @@ class Db {
       });
     });
   }
+
+  async removeTask(id: number | string): Promise<boolean> {
+    return new Promise(resolve => {
+      const query = 'DELETE FROM task WHERE id=?';
+
+      this.db.run(query, [id], err => {
+        resolve(!err);
+      });
+    });
+  }
 }
 
 export default Db;
