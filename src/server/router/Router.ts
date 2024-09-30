@@ -992,6 +992,79 @@ class Router {
 
       res.send(apiAnswer.answer(result));
     });
+
+    /**
+     * @swagger
+     * /user-list:
+     *   get:
+     *     tags:
+     *       - user
+     *     summary: Get list of searched tasks.
+     *     description: Get list of searched tasks.
+     *     parameters:
+     *       - in: query
+     *         name: 'searchStr'
+     *         schema:
+     *           type: string
+     *         required: true
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'ok'
+     *                 data:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: number
+     *                         example: 1
+     *                       name:
+     *                         type: number
+     *                         example: 'Vasya'
+     *                       login:
+     *                         type: string
+     *                         example: 'vasya'
+     *                       password:
+     *                         type: string
+     *                         example: '*********'
+     *                       email:
+     *                         type: string
+     *                         example: 'asd@asd.rt'
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
+    router.get('/user-list', async (req: any, res: any) => {
+      const { limit = 10, offset = 0 } = req.query;
+
+      const result = await userManager.getListOfUsers(limit, offset);
+      const count = await userManager.getCountOfUsers();
+
+      if (result) {
+        res.send(apiAnswer.answer({ users: result, totalCount: count }));
+        return;
+      }
+
+      res.send(apiAnswer.error(3050));
+    });
   }
 
   getRouter() {

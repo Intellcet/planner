@@ -230,6 +230,30 @@ class Db {
       });
     });
   }
+
+  async getListOfUsers(limit: number, offset: number): Promise<UserRow[]> {
+    return new Promise(resolve => {
+      const query = 'SELECT * FROM user LIMIT ? OFFSET ?';
+
+      this.db.all(query, [limit, offset], (err, rows) => {
+        if (err) resolve([]);
+
+        resolve(rows);
+      });
+    });
+  }
+
+  async getCountOfAllUsers(): Promise<number | null> {
+    return new Promise(resolve => {
+      const query = "SELECT COUNT(*) as 'count' FROM user";
+
+      this.db.get(query, (err, row) => {
+        if (err) resolve(null);
+
+        resolve(row.count);
+      });
+    });
+  }
 }
 
 export default Db;

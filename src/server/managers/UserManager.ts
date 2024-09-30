@@ -3,6 +3,7 @@ import md5 from 'md5';
 import Db from '../db/Db';
 import { convertToUser } from '../convertToEntities/convertToUser';
 import User from '../entities/user/User';
+import { UserRow } from '../types';
 
 type UserManagerOptions = {
   db: Db;
@@ -54,8 +55,7 @@ class UserManager {
     return null;
   }
 
-  async searchUsers(searchStr: string) {
-    const userRows = await this._db.getListOfUsersByPattern(searchStr);
+  async getUsersFromRows(userRows: UserRow[]) {
     const users: User[] = [];
 
     if (userRows.length === 0) return [];
@@ -63,6 +63,22 @@ class UserManager {
     userRows.forEach(row => users.push(convertToUser(row)));
 
     return users;
+  }
+
+  async getListOfUsers(limit: number, offset: number) {
+    const userRows = await this._db.getListOfUsers(limit, offset);
+
+    return this.getUsersFromRows(userRows);
+  }
+
+  async getCountOfUsers() {
+    return this._db.getCountOfAllUsers();
+  }
+
+  async searchUsers(searchStr: string) {
+    const userRows = await this._db.getListOfUsersByPattern(searchStr);
+
+    return this.getUsersFromRows(userRows);
   }
 }
 
