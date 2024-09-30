@@ -10,24 +10,24 @@ export const BUTTON_TYPE = {
 
 type ButtonProps = {
   type?: keyof typeof BUTTON_TYPE;
-  category: 'buttonText' | 'buttonCircle';
+  view?: 'simple' | 'circle';
   content?: React.ReactNode;
   onClick: (event: React.SyntheticEvent) => void;
   children?: React.ReactNode;
-  customButton?: string;
-  customIcon?: string;
-  customText?: string;
+  classNameButton?: string;
+  classNameIcon?: string;
+  classNameText?: string;
 };
 
 const Button = (props: ButtonProps): React.ReactElement => {
   const {
-    category,
+    view = 'simple',
     type = 'button',
     content,
     onClick,
-    customButton,
-    customIcon,
-    customText,
+    classNameButton,
+    classNameIcon,
+    classNameText,
     children,
   } = props;
 
@@ -43,15 +43,15 @@ const Button = (props: ButtonProps): React.ReactElement => {
     <button
       className={clsx(
         styles.container,
-        category === 'buttonText' && styles.containerText,
-        category === 'buttonCircle' && styles.containerCircle,
-        customButton
+        view === 'simple' && styles.containerText,
+        view === 'circle' && styles.containerCircle,
+        classNameButton
       )}
       type={type}
       onClick={handleClick}
     >
-      {content ? <div className={clsx(customIcon)}>{content}</div> : ''}
-      {children ? <div className={clsx(customText)}>{children}</div> : ''}
+      {content && <div className={clsx(classNameIcon)}>{content}</div>}
+      {children && <div className={clsx(classNameText)}>{children}</div>}
     </button>
   );
 };

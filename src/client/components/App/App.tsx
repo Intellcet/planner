@@ -12,15 +12,15 @@ import Text from '../Text';
 
 import ClockSVG from '../../assets/clock.svg';
 
-const ExampleAction = () => {
-  console.log(ClockSVG.width);
+const exampleAction = () => {
+  console.log(ClockSVG);
 };
 
 const App = (): React.ReactElement => {
   return (
     <div>
       <Button
-        category="buttonCircle"
+        view="circle"
         type="button"
         content={
           <Icon
@@ -30,11 +30,11 @@ const App = (): React.ReactElement => {
             height={40}
           />
         }
-        onClick={ExampleAction}
+        onClick={exampleAction}
       >
         <Text content="Какой то текст" />
       </Button>
-      <Button category="buttonText" type="button" onClick={ExampleAction}>
+      <Button type="button" onClick={exampleAction}>
         <Text content="ClockSVG" />
       </Button>
       <Task
