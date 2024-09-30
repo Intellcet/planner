@@ -7,11 +7,13 @@ import '../../styles/variables.pcss';
 
 import Task from '../Task';
 import Button from '../Button';
+import Icon from '../Icon';
+import Text from '../Text';
 
 import ClockSVG from '../../assets/clock.svg';
 
 const ExampleAction = () => {
-  console.log('click');
+  console.log(ClockSVG.width);
 };
 
 const App = (): React.ReactElement => {
@@ -20,18 +22,21 @@ const App = (): React.ReactElement => {
       <Button
         category="buttonCircle"
         type="button"
-        content={ClockSVG}
-        viewBox="0 0 40 40"
-        width={40}
-        height={40}
+        content={
+          <Icon
+            id={ClockSVG.id}
+            viewBox={ClockSVG.viewBox}
+            width={40}
+            height={40}
+          />
+        }
         onClick={ExampleAction}
-      />
-      <Button
-        category="buttonText"
-        type="button"
-        content="ClockSVG"
-        onClick={ExampleAction}
-      />
+      >
+        <Text content="Какой то текст" />
+      </Button>
+      <Button category="buttonText" type="button" onClick={ExampleAction}>
+        <Text content="ClockSVG" />
+      </Button>
       <Task
         id={1}
         date="20.12.2007"

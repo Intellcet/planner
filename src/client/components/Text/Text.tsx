@@ -7,7 +7,7 @@ type TextProps = {
 
 const Text = (props: TextProps): React.ReactElement => {
   const { content } = props;
-  return <div className={styles.content}>{content}</div>;
+  return <span className={styles.content}>{content}</span>;
 };
 
 export default Text;
