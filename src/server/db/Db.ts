@@ -150,6 +150,21 @@ class Db {
       });
     });
   }
+
+  async addComment(
+    authorId: number | string,
+    taskId: number | string,
+    text: string
+  ) {
+    return new Promise(resolve => {
+      const query =
+        'INSERT INTO comment (author_id, task_id, text) VALUES(?, ?, ?)';
+
+      this.db.run(query, [authorId, taskId, text], err => {
+        resolve(!err);
+      });
+    });
+  }
 }
 
 export default Db;

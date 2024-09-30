@@ -17,6 +17,7 @@ class ApiAnswer {
     3020: 'task is not exists',
     3030: 'cannot update task',
     3040: 'cannot delete task',
+    4010: 'cannot create comment',
     401: 'not authorized',
     402: 'invalid authorized token',
     404: 'element not found',

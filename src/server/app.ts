@@ -9,13 +9,15 @@ import Router from './router/Router';
 import Db from './db/Db';
 import UserManager from './managers/UserManager';
 import TaskManager from './managers/TaskManager';
+import CommentManager from './managers/CommentManager';
 
 const app = express();
 const server = new http.Server(app);
 const db = new Db({ dbName: Settings.dbName });
 const userManager = new UserManager({ db });
 const taskManager = new TaskManager({ db });
-const router = new Router({ userManager, taskManager });
+const commentManager = new CommentManager({ db });
+const router = new Router({ userManager, taskManager, commentManager });
 const swaggerDocs = swaggerjsdoc(Settings.swagger);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));

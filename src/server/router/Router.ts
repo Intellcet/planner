@@ -3,17 +3,19 @@ import express from 'express';
 import apiAnswer from './ApiAnswer';
 import UserManager from '../managers/UserManager';
 import TaskManager from '../managers/TaskManager';
+import CommentManager from '../managers/CommentManager';
 
 const router = express.Router();
 
 type RouterOptions = {
   userManager: UserManager;
   taskManager: TaskManager;
+  commentManager: CommentManager;
 };
 
 class Router {
   constructor(options: RouterOptions) {
-    const { userManager, taskManager } = options;
+    const { userManager, taskManager, commentManager } = options;
 
     /**
      * @swagger
@@ -545,6 +547,24 @@ class Router {
       }
 
       res.send(apiAnswer.error(3040));
+    });
+
+    router.post('/comment', async (req: any, res: any) => {
+      const { authorId, taskId, text } = req.body;
+
+      if (!authorId || !taskId || !text) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
+      const result = await commentManager.createComment(authorId, taskId, text);
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(4010));
     });
   }
 
