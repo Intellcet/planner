@@ -584,6 +584,59 @@ class Router {
       res.send(apiAnswer.error(3040));
     });
 
+    /**
+     * @swagger
+     * /comment:
+     *   post:
+     *     tags:
+     *       - comment
+     *     summary: Add comment.
+     *     description: Add comment.
+     *     requestBody:
+     *         description: Each field is req
+     *         required: true
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 authorId:
+     *                   type: number
+     *                   example: 1
+     *                 taskId:
+     *                   type: number
+     *                   example: 1
+     *                 text:
+     *                   type: string
+     *                   example: 'Тестовый комментарий для задачи'
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'ok'
+     *                 data:
+     *                   type: boolean
+     *                   example: true
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
     router.post('/comment', async (req: any, res: any) => {
       const { authorId, taskId, text } = req.body;
 
