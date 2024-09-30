@@ -2,6 +2,7 @@ import md5 from 'md5';
 
 import Db from '../db/Db';
 import { convertToUser } from '../convertToEntities/convertToUser';
+import User from '../entities/user/User';
 
 type UserManagerOptions = {
   db: Db;
@@ -51,6 +52,17 @@ class UserManager {
     }
 
     return null;
+  }
+
+  async searchUsers(searchStr: string) {
+    const userRows = await this._db.getListOfUsersByPattern(searchStr);
+    const users: User[] = [];
+
+    if (userRows.length === 0) return [];
+
+    userRows.forEach(row => users.push(convertToUser(row)));
+
+    return users;
   }
 }
 

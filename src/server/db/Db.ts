@@ -218,6 +218,18 @@ class Db {
       });
     });
   }
+
+  async getListOfUsersByPattern(pattern: string): Promise<UserRow[]> {
+    return new Promise(resolve => {
+      const query = `SELECT * FROM user WHERE name LIKE '%${pattern}%'`;
+
+      this.db.all(query, (err, rows) => {
+        if (err) resolve([]);
+
+        resolve(rows);
+      });
+    });
+  }
 }
 
 export default Db;
