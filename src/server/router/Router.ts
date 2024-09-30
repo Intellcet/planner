@@ -1,19 +1,19 @@
 import express from 'express';
 
-import Db from '../db/Db';
-import UserManager from '../managers/UserManager';
 import apiAnswer from './ApiAnswer';
+import UserManager from '../managers/UserManager';
+import TaskManager from '../managers/TaskManager';
 
 const router = express.Router();
 
 type RouterOptions = {
-  db: Db;
   userManager: UserManager;
+  taskManager: TaskManager;
 };
 
 class Router {
   constructor(options: RouterOptions) {
-    const { db, userManager } = options;
+    const { userManager, taskManager } = options;
 
     router.get('/', async (req: any, res: any) => {
       res.send('server is working!');
@@ -48,6 +48,77 @@ class Router {
       }
 
       res.send(apiAnswer.answer(result));
+    });
+
+    router.get('/task', async (req: any, res: any) => {
+      const { taskId } = req.query;
+
+      const task = await taskManager.getTask(taskId);
+
+      if (!task) {
+        res.send(apiAnswer.error(3020));
+        return;
+      }
+
+      res.send(apiAnswer.answer(task));
+    });
+
+    router.post('/task', async (req: any, res: any) => {
+      const {
+        creatorId,
+        statusId,
+        title,
+        description,
+        labels,
+        finishTime = null,
+        participants = [],
+      } = req.body;
+
+      const result = await taskManager.createTask(
+        creatorId,
+        statusId,
+        title,
+        description,
+        labels,
+        participants,
+        finishTime
+      );
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(3010));
+    });
+
+    router.put('/task', async (req: any, res: any) => {
+      const {
+        id,
+        status = null,
+        title = null,
+        description = null,
+        labels = null,
+        finishTime = null,
+        participants = null,
+      } = req.body;
+
+      const result = await taskManager.updateTask({
+        id,
+        title,
+        status,
+        description,
+        labels,
+        finishTime,
+        participants,
+      });
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(3030));
     });
   }
 
