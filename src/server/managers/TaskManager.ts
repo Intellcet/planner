@@ -117,6 +117,10 @@ class TaskManager {
 
     return result;
   }
+
+  async deleteTask(id: number | string): Promise<boolean> {
+    return this._db.removeTask(id);
+  }
 }
 
 export default TaskManager;

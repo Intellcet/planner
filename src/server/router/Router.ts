@@ -491,6 +491,61 @@ class Router {
 
       res.send(apiAnswer.error(3030));
     });
+
+    /**
+     * @swagger
+     * /task:
+     *   delete:
+     *     tags:
+     *       - task
+     *     summary: Delete task.
+     *     description: Delete task.
+     *     parameters:
+     *       - in: query
+     *         name: 'taskId'
+     *         schema:
+     *           type: string
+     *         required: true
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'ok'
+     *                 data:
+     *                   type: boolean
+     *                   example: true
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
+    router.delete('/task', async (req: any, res: any) => {
+      const { taskId } = req.query;
+
+      const result = await taskManager.deleteTask(taskId);
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(3040));
+    });
   }
 
   getRouter() {
