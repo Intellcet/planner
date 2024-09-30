@@ -1,14 +1,6 @@
-import Task from '../entities/task/Task';
+import { TaskRow } from '../types';
 
-type TaskRow = {
-  id: number;
-  creatorId: number;
-  statusId: number;
-  title: string;
-  description: string;
-  labels: string[];
-  finishTime: string;
-};
+import Task from '../entities/task/Task';
 
 export const convertToTask = (row: TaskRow): Task => {
   return new Task(
