@@ -678,26 +678,32 @@ class Router {
      *             schema:
      *               type: object
      *               properties:
-     *                 author:
+     *                 status:
+     *                   type: string
+     *                   example: 'ok'
+     *                 data:
      *                   type: object
      *                   properties:
-     *                     id:
+     *                     author:
+     *                       type: object
+     *                       properties:
+     *                         id:
+     *                           type: number
+     *                         name:
+     *                           type: string
+     *                         login:
+     *                           type: string
+     *                         password:
+     *                           type: string
+     *                         email:
+     *                           type: string
+     *                       example: { id: 1, name: 'Vasya', password: '******', login: 'vasya', email: 'sadf@ds.ed' }
+     *                     taskId:
      *                       type: number
-     *                     name:
+     *                       example: 1
+     *                     text:
      *                       type: string
-     *                     login:
-     *                       type: string
-     *                     password:
-     *                       type: string
-     *                     email:
-     *                       type: string
-     *                   example: { id: 1, name: 'Vasya', password: '******', login: 'vasya', email: 'sadf@ds.ed' }
-     *                 taskId:
-     *                   type: number
-     *                   example: 1
-     *                 text:
-     *                   type: string
-     *                   example: 'Тестовый комментарий для задачи'
+     *                       example: 'Тестовый комментарий для задачи'
      *       '204':
      *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
      *         content:
@@ -747,6 +753,95 @@ class Router {
       }
 
       res.send(apiAnswer.error(4020));
+    });
+
+    /**
+     * @swagger
+     * /task-list:
+     *   get:
+     *     tags:
+     *       - task
+     *     summary: Get list of tasks.
+     *     description: Get list of tasks.
+     *     parameters:
+     *       - in: query
+     *         name: 'limit'
+     *         schema:
+     *           type: string
+     *         required: true
+     *       - in: query
+     *         name: 'offset'
+     *         schema:
+     *           type: string
+     *         required: true
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'ok'
+     *                 data:
+     *                   type: object
+     *                   properties:
+     *                     count:
+     *                       type: number
+     *                       example: 5
+     *                     tasks:
+     *                       type: array
+     *                       items:
+     *                         type: object
+     *                         properties:
+     *                           author:
+     *                             type: object
+     *                             properties:
+     *                               id:
+     *                                 type: number
+     *                               name:
+     *                                 type: string
+     *                               login:
+     *                                 type: string
+     *                               password:
+     *                                 type: string
+     *                               email:
+     *                                 type: string
+     *                             example: { id: 1, name: 'Vasya', password: '******', login: 'vasya', email: 'sadf@ds.ed' }
+     *                           taskId:
+     *                             type: number
+     *                             example: 1
+     *                           text:
+     *                             type: string
+     *                             example: 'Тестовый комментарий для задачи'
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
+    router.get('/task-list', async (req: any, res: any) => {
+      const { limit = 10, offset = 0 } = req.query;
+
+      const result = await taskManager.getListOfTasks(limit, offset);
+      const count = await taskManager.getCountTasks();
+
+      if (result) {
+        res.send(apiAnswer.answer({ tasks: result, totalCount: count }));
+        return;
+      }
+
+      res.send(apiAnswer.error(3050));
     });
   }
 
