@@ -42,6 +42,16 @@ class UserManager {
 
     return this._db.addUser(name, login, hash, email);
   }
+
+  async getUser(id: number) {
+    const userRow = await this._db.getUserById(id);
+
+    if (userRow) {
+      return convertToUser(userRow);
+    }
+
+    return null;
+  }
 }
 
 export default UserManager;

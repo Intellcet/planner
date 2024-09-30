@@ -3,17 +3,20 @@ import express from 'express';
 import apiAnswer from './ApiAnswer';
 import UserManager from '../managers/UserManager';
 import TaskManager from '../managers/TaskManager';
+import CommentManager from '../managers/CommentManager';
+import User from '../entities/user/User';
 
 const router = express.Router();
 
 type RouterOptions = {
   userManager: UserManager;
   taskManager: TaskManager;
+  commentManager: CommentManager;
 };
 
 class Router {
   constructor(options: RouterOptions) {
-    const { userManager, taskManager } = options;
+    const { userManager, taskManager, commentManager } = options;
 
     /**
      * @swagger
@@ -99,6 +102,11 @@ class Router {
     router.post('/login', async (req: any, res: any) => {
       const { login, password } = req.body;
 
+      if (!login || !password) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
       const result = await userManager.login(login, password);
 
       if (!result) {
@@ -167,6 +175,11 @@ class Router {
      */
     router.post('/registration', async (req: any, res: any) => {
       const { name, login, password, email } = req.body;
+
+      if (!name || !login || !password || !email) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
 
       const result = await userManager.registration(
         name,
@@ -283,6 +296,11 @@ class Router {
     router.get('/task', async (req: any, res: any) => {
       const { taskId } = req.query;
 
+      if (!taskId) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
       const task = await taskManager.getTask(taskId);
 
       if (!task) {
@@ -368,10 +386,15 @@ class Router {
         statusId,
         title,
         description,
-        labels,
+        labels = [],
         finishTime = null,
         participants = [],
       } = req.body;
+
+      if (!creatorId || !statusId || !title || !description) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
 
       const result = await taskManager.createTask(
         creatorId,
@@ -474,6 +497,16 @@ class Router {
         participants = null,
       } = req.body;
 
+      if (
+        !id ||
+        [status, title, description, labels, finishTime, participants].every(
+          Boolean
+        )
+      ) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
       const result = await taskManager.updateTask({
         id,
         title,
@@ -537,6 +570,11 @@ class Router {
     router.delete('/task', async (req: any, res: any) => {
       const { taskId } = req.query;
 
+      if (!taskId) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
       const result = await taskManager.deleteTask(taskId);
 
       if (result) {
@@ -545,6 +583,170 @@ class Router {
       }
 
       res.send(apiAnswer.error(3040));
+    });
+
+    /**
+     * @swagger
+     * /comment:
+     *   post:
+     *     tags:
+     *       - comment
+     *     summary: Add comment.
+     *     description: Add comment.
+     *     requestBody:
+     *         description: Each field is req
+     *         required: true
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 authorId:
+     *                   type: number
+     *                   example: 1
+     *                 taskId:
+     *                   type: number
+     *                   example: 1
+     *                 text:
+     *                   type: string
+     *                   example: 'Тестовый комментарий для задачи'
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'ok'
+     *                 data:
+     *                   type: boolean
+     *                   example: true
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
+    router.post('/comment', async (req: any, res: any) => {
+      const { authorId, taskId, text } = req.body;
+
+      if (!authorId || !taskId || !text) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
+      const result = await commentManager.createComment(authorId, taskId, text);
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(4010));
+    });
+
+    /**
+     * @swagger
+     * /comment:
+     *   get:
+     *     tags:
+     *       - comment
+     *     summary: Get comment.
+     *     description: Get comment.
+     *     parameters:
+     *       - in: query
+     *         name: 'taskId'
+     *         schema:
+     *           type: string
+     *         required: true
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 author:
+     *                   type: object
+     *                   properties:
+     *                     id:
+     *                       type: number
+     *                     name:
+     *                       type: string
+     *                     login:
+     *                       type: string
+     *                     password:
+     *                       type: string
+     *                     email:
+     *                       type: string
+     *                   example: { id: 1, name: 'Vasya', password: '******', login: 'vasya', email: 'sadf@ds.ed' }
+     *                 taskId:
+     *                   type: number
+     *                   example: 1
+     *                 text:
+     *                   type: string
+     *                   example: 'Тестовый комментарий для задачи'
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
+    router.get('/comment', async (req: any, res: any) => {
+      const { taskId } = req.query;
+
+      if (!taskId) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
+      const commentsSimpleRows = await commentManager.getListOfComments(taskId);
+
+      if (!commentsSimpleRows) {
+        res.send(apiAnswer.error(4020));
+        return;
+      }
+
+      const authorsPromises: Promise<User | null>[] = [];
+
+      commentsSimpleRows.forEach(comment => {
+        if (!comment) return;
+
+        authorsPromises.push(userManager.getUser(comment.author_id));
+      });
+
+      const authors = (await Promise.all(authorsPromises)) as User[];
+      const result = commentManager.addAuthorsToComments(
+        authors,
+        commentsSimpleRows
+      );
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(4020));
     });
   }
 

@@ -19,6 +19,9 @@ const Settings = {
           {
             name: 'task',
           },
+          {
+            name: 'comment',
+          },
         ],
       },
       servers: [
