@@ -117,19 +117,7 @@ class TaskManager {
     return this.convertSimpleTaskToTask(taskSimpleRow);
   }
 
-  async updateTask(options: UpdateTaskOptions): Promise<boolean> {
-    const nonEmptyOptions = omitBy(options, isNil);
-    const result = await this._db.updateTask(nonEmptyOptions);
-
-    return result;
-  }
-
-  async deleteTask(id: number | string): Promise<boolean> {
-    return this._db.removeTask(id);
-  }
-
-  async getListOfTasks(limit: number, offset: number): Promise<Task[]> {
-    const taskSimpleRows = await this._db.getListOfTasks(limit, offset);
+  async getTasks(taskSimpleRows: TaskSimpleRow[]) {
     const taskSimpleRowsPromises: Promise<Task | null>[] = [];
 
     taskSimpleRows.forEach(el => {
@@ -148,8 +136,31 @@ class TaskManager {
     return tasks;
   }
 
+  async updateTask(options: UpdateTaskOptions): Promise<boolean> {
+    const nonEmptyOptions = omitBy(options, isNil);
+    const result = await this._db.updateTask(nonEmptyOptions);
+
+    return result;
+  }
+
+  async deleteTask(id: number | string): Promise<boolean> {
+    return this._db.removeTask(id);
+  }
+
+  async getListOfTasks(limit: number, offset: number): Promise<Task[]> {
+    const taskSimpleRows = await this._db.getListOfTasks(limit, offset);
+
+    return this.getTasks(taskSimpleRows);
+  }
+
   async getCountTasks(): Promise<number | null> {
     return this._db.getCountOfAllTasks();
+  }
+
+  async searchTasks(searchStr: string): Promise<Task[]> {
+    const taskSimpleRows = await this._db.getListOfTasksByPattern(searchStr);
+
+    return this.getTasks(taskSimpleRows);
   }
 }
 

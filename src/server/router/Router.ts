@@ -843,6 +843,83 @@ class Router {
 
       res.send(apiAnswer.error(3050));
     });
+
+    /**
+     * @swagger
+     * /task-search:
+     *   get:
+     *     tags:
+     *       - task
+     *     summary: Get list of searched tasks.
+     *     description: Get list of searched tasks.
+     *     parameters:
+     *       - in: query
+     *         name: 'searchStr'
+     *         schema:
+     *           type: string
+     *         required: true
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'ok'
+     *                 data:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       author:
+     *                         type: object
+     *                         properties:
+     *                           id:
+     *                             type: number
+     *                           name:
+     *                             type: string
+     *                           login:
+     *                             type: string
+     *                           password:
+     *                             type: string
+     *                           email:
+     *                             type: string
+     *                         example: { id: 1, name: 'Vasya', password: '******', login: 'vasya', email: 'sadf@ds.ed' }
+     *                       taskId:
+     *                         type: number
+     *                         example: 1
+     *                       text:
+     *                         type: string
+     *                         example: 'Тестовый комментарий для задачи'
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
+    router.get('/task-search', async (req: any, res: any) => {
+      const { searchStr } = req.query;
+
+      if (!searchStr) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
+      const result = await taskManager.searchTasks(searchStr);
+
+      res.send(apiAnswer.answer(result));
+    });
   }
 
   getRouter() {

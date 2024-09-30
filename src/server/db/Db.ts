@@ -206,6 +206,18 @@ class Db {
       });
     });
   }
+
+  async getListOfTasksByPattern(pattern: string): Promise<TaskSimpleRow[]> {
+    return new Promise(resolve => {
+      const query = `SELECT * FROM task WHERE title LIKE '%${pattern}%'`;
+
+      this.db.all(query, (err, rows) => {
+        if (err) resolve([]);
+
+        resolve(rows);
+      });
+    });
+  }
 }
 
 export default Db;
