@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 
-import { StatusRow, TaskSimpleRow, UserRow } from '../types';
+import { CommentSimpleRow, StatusRow, TaskSimpleRow, UserRow } from '../types';
 
 type DBOptions = {
   [dbName: string]: string;
@@ -162,6 +162,20 @@ class Db {
 
       this.db.run(query, [authorId, taskId, text], err => {
         resolve(!err);
+      });
+    });
+  }
+
+  async getListOfComments(
+    taskId: number | string
+  ): Promise<CommentSimpleRow[] | null> {
+    return new Promise(resolve => {
+      const query = 'SELECT * FROM comment WHERE task_id=?';
+
+      this.db.all(query, [taskId], (err, rows) => {
+        if (err) resolve(null);
+
+        resolve(rows);
       });
     });
   }

@@ -4,6 +4,7 @@ import apiAnswer from './ApiAnswer';
 import UserManager from '../managers/UserManager';
 import TaskManager from '../managers/TaskManager';
 import CommentManager from '../managers/CommentManager';
+import User from '../entities/user/User';
 
 const router = express.Router();
 
@@ -653,6 +654,99 @@ class Router {
       }
 
       res.send(apiAnswer.error(4010));
+    });
+
+    /**
+     * @swagger
+     * /comment:
+     *   get:
+     *     tags:
+     *       - comment
+     *     summary: Get comment.
+     *     description: Get comment.
+     *     parameters:
+     *       - in: query
+     *         name: 'taskId'
+     *         schema:
+     *           type: string
+     *         required: true
+     *     responses:
+     *       '200':
+     *         description: A successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 author:
+     *                   type: object
+     *                   properties:
+     *                     id:
+     *                       type: number
+     *                     name:
+     *                       type: string
+     *                     login:
+     *                       type: string
+     *                     password:
+     *                       type: string
+     *                     email:
+     *                       type: string
+     *                   example: { id: 1, name: 'Vasya', password: '******', login: 'vasya', email: 'sadf@ds.ed' }
+     *                 taskId:
+     *                   type: number
+     *                   example: 1
+     *                 text:
+     *                   type: string
+     *                   example: 'Тестовый комментарий для задачи'
+     *       '204':
+     *         description: В коде нет статусов кодов кроме 200, тут и далее будут описаны ошибки
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: 'error'
+     *                 data:
+     *                   type: string
+     *                   example: 'Текст ошибки'
+     */
+    router.get('/comment', async (req: any, res: any) => {
+      const { taskId } = req.query;
+
+      if (!taskId) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
+      const commentsSimpleRows = await commentManager.getListOfComments(taskId);
+
+      if (!commentsSimpleRows) {
+        res.send(apiAnswer.error(4020));
+        return;
+      }
+
+      const authorsPromises: Promise<User | null>[] = [];
+
+      commentsSimpleRows.forEach(comment => {
+        if (!comment) return;
+
+        authorsPromises.push(userManager.getUser(comment.author_id));
+      });
+
+      const authors = (await Promise.all(authorsPromises)) as User[];
+      const result = commentManager.addAuthorsToComments(
+        authors,
+        commentsSimpleRows
+      );
+
+      if (result) {
+        res.send(apiAnswer.answer(result));
+        return;
+      }
+
+      res.send(apiAnswer.error(4020));
     });
   }
 
