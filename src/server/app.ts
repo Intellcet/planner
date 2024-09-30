@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import http from 'http';
+import swaggerjsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 import Settings from './settings';
 import Router from './router/Router';
@@ -14,7 +16,9 @@ const db = new Db({ dbName: Settings.dbName });
 const userManager = new UserManager({ db });
 const taskManager = new TaskManager({ db });
 const router = new Router({ userManager, taskManager });
+const swaggerDocs = swaggerjsdoc(Settings.swagger);
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
