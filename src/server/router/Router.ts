@@ -101,6 +101,11 @@ class Router {
     router.post('/login', async (req: any, res: any) => {
       const { login, password } = req.body;
 
+      if (!login || !password) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
       const result = await userManager.login(login, password);
 
       if (!result) {
@@ -169,6 +174,11 @@ class Router {
      */
     router.post('/registration', async (req: any, res: any) => {
       const { name, login, password, email } = req.body;
+
+      if (!name || !login || !password || !email) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
 
       const result = await userManager.registration(
         name,
@@ -285,6 +295,11 @@ class Router {
     router.get('/task', async (req: any, res: any) => {
       const { taskId } = req.query;
 
+      if (!taskId) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
       const task = await taskManager.getTask(taskId);
 
       if (!task) {
@@ -370,10 +385,15 @@ class Router {
         statusId,
         title,
         description,
-        labels,
+        labels = [],
         finishTime = null,
         participants = [],
       } = req.body;
+
+      if (!creatorId || !statusId || !title || !description) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
 
       const result = await taskManager.createTask(
         creatorId,
@@ -476,6 +496,16 @@ class Router {
         participants = null,
       } = req.body;
 
+      if (
+        !id ||
+        [status, title, description, labels, finishTime, participants].every(
+          Boolean
+        )
+      ) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
+
       const result = await taskManager.updateTask({
         id,
         title,
@@ -538,6 +568,11 @@ class Router {
      */
     router.delete('/task', async (req: any, res: any) => {
       const { taskId } = req.query;
+
+      if (!taskId) {
+        res.send(apiAnswer.error(1000));
+        return;
+      }
 
       const result = await taskManager.deleteTask(taskId);
 
