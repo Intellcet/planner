@@ -179,6 +179,81 @@ class Db {
       });
     });
   }
+
+  async getListOfTasks(
+    limit: number,
+    offset: number
+  ): Promise<TaskSimpleRow[]> {
+    return new Promise(resolve => {
+      const query = 'SELECT * FROM task LIMIT ? OFFSET ?';
+
+      this.db.all(query, [limit, offset], (err, rows) => {
+        if (err) resolve([]);
+
+        resolve(rows);
+      });
+    });
+  }
+
+  async getCountOfAllTasks(): Promise<number | null> {
+    return new Promise(resolve => {
+      const query = "SELECT COUNT(*) as 'count' FROM task";
+
+      this.db.get(query, (err, row) => {
+        if (err) resolve(null);
+
+        resolve(row.count);
+      });
+    });
+  }
+
+  async getListOfTasksByPattern(pattern: string): Promise<TaskSimpleRow[]> {
+    return new Promise(resolve => {
+      const query = `SELECT * FROM task WHERE title LIKE '%${pattern}%'`;
+
+      this.db.all(query, (err, rows) => {
+        if (err) resolve([]);
+
+        resolve(rows);
+      });
+    });
+  }
+
+  async getListOfUsersByPattern(pattern: string): Promise<UserRow[]> {
+    return new Promise(resolve => {
+      const query = `SELECT * FROM user WHERE name LIKE '%${pattern}%'`;
+
+      this.db.all(query, (err, rows) => {
+        if (err) resolve([]);
+
+        resolve(rows);
+      });
+    });
+  }
+
+  async getListOfUsers(limit: number, offset: number): Promise<UserRow[]> {
+    return new Promise(resolve => {
+      const query = 'SELECT * FROM user LIMIT ? OFFSET ?';
+
+      this.db.all(query, [limit, offset], (err, rows) => {
+        if (err) resolve([]);
+
+        resolve(rows);
+      });
+    });
+  }
+
+  async getCountOfAllUsers(): Promise<number | null> {
+    return new Promise(resolve => {
+      const query = "SELECT COUNT(*) as 'count' FROM user";
+
+      this.db.get(query, (err, row) => {
+        if (err) resolve(null);
+
+        resolve(row.count);
+      });
+    });
+  }
 }
 
 export default Db;
